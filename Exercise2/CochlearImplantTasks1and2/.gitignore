@@ -1,0 +1,12 @@
+# One-time authoring scripts — not part of the workshop deliverable.
+# (They were used to set up artifacts such as the Verify links, which are
+#  already saved in the committed .slmx files.)
+authoring/
+
+# Regenerable Simulink build artifacts / caches.
+slprj/
+*.slxc
+
+# MATLAB editor autosaves.
+*.asv
+*.m~
