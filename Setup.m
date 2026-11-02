@@ -19,7 +19,7 @@ else
     addpath(genpath(pwd)); 
 
     % Open the markdown files
-    edit("Knowledge/guide.md");
+    edit("Knowledge/Guide.md");
     edit("README.md");
 
     fprintf('\nEnvironment Check is Complete!\n');
