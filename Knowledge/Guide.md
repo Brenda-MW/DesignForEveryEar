@@ -187,14 +187,23 @@ This environment includes the **MATLAB MCP server** and the **MATLAB and Simulin
 
 ### Notes for Exercise 3
 
-- **Files:** `Exercise3/Ex3_SpeakerRecognitionAICompression.m` with the trained `netTrainedSmall.mat`, saved results `prunedNet.mat`, `projectedNet.mat` and `quantizedNet.mat`, the custom layer `statisticsPooling1dLayer.m` (needed to load the networks), and helper functions. The data file `trainDataSmall.mat` is in the repository root, not in `Exercise3/`.
+- **Files:** everything is in `Exercise3/`:
+  - the Live Script `Ex3_SpeakerRecognitionAICompression.m`;
+  - the trained network `netTrainedSmall.mat`, and saved results `prunedNet.mat`, `projectedNet.mat` and `quantizedNet.mat`;
+  - the data `trainDataSmall.mat`, loaded with `loadSpeakerData.m`;
+  - the custom layer `statisticsPooling1dLayer.m`, needed to load the networks;
+  - helper functions.
+- **Data:** 30 MFCC features per frame, in variable-length sequences. The feature sets `xTrain`, `xValidation`, `xTest`, `xEnroll` and `xDET` have matching labels `tTrain`, `tValidation` and so on.
+  - Training, validation and test use 16, 4 and 6 sequences per speaker (4015, 998 and 1506 sequences, all 251 speakers).
+  - Enrollment has 407 sequences from 40 speakers, and the verification trials have 1196 sequences from 80 speakers.
+  - To keep the download small (about 38 MB), features are stored as 8-bit integers. `loadSpeakerData` converts them back to `single`, so always load the data with it, not with `load`. The rounding does not measurably change accuracy.
 - **Two jobs, two metrics:** speaker identification (251 speakers) uses accuracy, where higher is better. Speaker verification uses x-vectors from layer `fc_1` with LDA and PLDA scoring, measured as the equal error rate (EER), where lower is better.
 - **Workflow:**
   1. Compression Analysis in Deep Network Designer shows 1.7 MB, 444.1k parameters and 24 layers. At most, pruning removes 23.1% of the parameters, projection 98% and quantization 75% of the memory. Its advice: prune, then project, then quantize.
   2. Taylor pruning (`compressNetworkUsingTaylorPruning`) stops when validation accuracy falls 2 points below the original.
   3. Projection (`neuronPCA`, `compressNetworkUsingProjection`) uses a trade-off sweep from 20% to 80%; the script picks 0.5.
   4. int8 quantization (`dlquantizer`, then `prepareNetwork`, `calibrate`, `quantize`).
-- **Expected results (approximate):**
+- **Expected results (approximate):** these come from an earlier run on a larger version of the data, so fresh runs give somewhat different values. For example, the original network scores about 92% on the current test set. Treat the trends as the lesson, not the exact numbers.
 
   | Step | Accuracy | EER | Notes |
   |---|---|---|---|
@@ -204,7 +213,7 @@ This environment includes the **MATLAB MCP server** and the **MATLAB and Simulin
   | Quantized | 91.1% | 0.063 | |
 
   Memory falls from about 1.7 MB to roughly a tenth of that. Results vary slightly from run to run, so quote rounded values.
-- **Time:** pruning takes about 10–15 minutes, and retraining takes minutes even on a GPU. MATLAB Online has no GPU, so retraining is slower there. Suggest the saved `.mat` files: each step has a commented `load` line in the Live Script.
+- **Time:** pruning and retraining are the slow steps. On the earlier, larger data, with a GPU, pruning took about 13 minutes and retraining about 2 minutes. MATLAB Online has no GPU, so they're slower there. Suggest the saved `.mat` files: each step has a commented `load` line in the Live Script.
 - **Flash vs RAM hint:** pruning and projection remove parameters, which saves both storage and compute. Quantization makes each weight and activation smaller (8-bit instead of 32-bit).
 
 ## 5. Experiments to suggest

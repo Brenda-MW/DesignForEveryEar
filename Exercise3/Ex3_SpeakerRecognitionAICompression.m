@@ -4,10 +4,8 @@
 %[text] ## 1. Analyze original model
 %[text] Load the trained network. The network is a smaller variant (i.e. fewer layers and less filters) of the network from the example [Speaker Recognition Using x-vectors](https://uk.mathworks.com/help/deeplearning/ug/speaker-recognition-using-x-vectors.html).
 load("netTrainedSmall.mat","net")
-%[text] Load the data needed for training, validation and testing. The data is a subset of the dataset used in the example [Speaker Recognition Using x-vectors](https://uk.mathworks.com/help/deeplearning/ug/speaker-recognition-using-x-vectors.html). The data is already preprocessed, i.e. predictors are variable-length vector sequences containing 30 MFCC features per frame. Targets represent one of 251 speaker IDs.
-data = load("trainDataSmall.mat",...
-    "xTrain","tTrain","xValidation","tValidation","xTest","tTest",...
-    "xEnroll","tEnroll","xDET","tDET","afe","classes");
+%[text] Load the data needed for training, validation and testing. The data is a subset of the dataset used in the example [Speaker Recognition Using x-vectors](https://uk.mathworks.com/help/deeplearning/ug/speaker-recognition-using-x-vectors.html). The data is already preprocessed, i.e. predictors are variable-length vector sequences containing 30 MFCC features per frame. Targets represent one of 251 speaker IDs. To keep the download small, the features are stored as 8-bit integers, and `loadSpeakerData` converts them back to single precision.
+data = loadSpeakerData("trainDataSmall.mat");
 %[text] Reduce noise from sequence truncation or padding during testing by sorting the sequences by length, so that each mini-batch contains sequences of similar length.
 [data.xTest,data.tTest] = sortbySequenceLength(data.xTest,data.tTest);
 [data.xEnroll,data.tEnroll] = sortbySequenceLength(data.xEnroll,data.tEnroll);
