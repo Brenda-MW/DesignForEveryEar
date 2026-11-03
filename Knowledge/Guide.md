@@ -174,6 +174,7 @@ This environment includes the **MATLAB MCP server** and the **MATLAB and Simulin
 - **Task 3:**
   - It configures Embedded Coder (`ert.tlc`) for the host computer. `slbuild` takes about a minute, so tell participants before they run it.
   - The SIL sections are optional and compare the Normal and SIL runs in the Simulation Data Inspector with `AbsTol=1e-12`.
+  - Don't recommend running SIL in MATLAB Online, because platform support can be unstable there. Suggest running it later from a desktop installation, after the setup sections of `Task3_codegen_SIL.m`. Code generation and the code metrics work fine in MATLAB Online.
   - For the "Try it" question (RAM with `single` instead of `double`), hint first: each floating-point state drops from 8 to 4 bytes.
   - Reference numbers from a test run (yours may differ slightly by release):
     - Block states (`CochlearImplant_SIL_DW`) take 6296 bytes of RAM.
@@ -200,20 +201,20 @@ This environment includes the **MATLAB MCP server** and the **MATLAB and Simulin
 - **Two jobs, two metrics:** speaker identification (251 speakers) uses accuracy, where higher is better. Speaker verification uses x-vectors from layer `fc_1` with LDA and PLDA scoring, measured as the equal error rate (EER), where lower is better.
 - **Workflow:**
   1. Compression Analysis in Deep Network Designer shows 1.7 MB, 444.1k parameters and 24 layers. At most, pruning removes 23.1% of the parameters, projection 98% and quantization 75% of the memory. Its advice: prune, then project, then quantize.
-  2. Taylor pruning (`compressNetworkUsingTaylorPruning`) stops when validation accuracy falls 2 points below the original.
-  3. Projection (`neuronPCA`, `compressNetworkUsingProjection`) uses a trade-off sweep from 20% to 80%; the script picks 0.5.
+  2. Taylor pruning (`compressNetworkUsingTaylorPruning`) stops when validation accuracy falls 3 points below the original.
+  3. Projection (`neuronPCA`, `compressNetworkUsingProjection`) uses a trade-off sweep from 20% to 80%; the script picks 0.45.
   4. int8 quantization (`dlquantizer`, then `prepareNetwork`, `calibrate`, `quantize`).
-- **Expected results (approximate):** these come from an earlier run on a larger version of the data, so fresh runs give somewhat different values. For example, the original network scores about 92% on the current test set. Treat the trends as the lesson, not the exact numbers.
+- **Expected results (approximate):** these come from the saved outputs in the Live Script, run on the current data. Fresh runs give slightly different values, so treat the trends as the lesson, not the exact numbers.
 
   | Step | Accuracy | EER | Notes |
   |---|---|---|---|
-  | Original | 93.5% | 0.058 | |
-  | Pruned | 92.3% | 0.058 | 18.2% fewer learnables, in `conv_1`, `BN_1`, `conv_2`, `BN_2` and `conv_5` |
-  | Projected | 91.7% | 0.062 | 50.2% fewer learnables, 98.5% of the variance kept |
-  | Quantized | 91.1% | 0.063 | |
+  | Original | 94.0% | 0.060 | |
+  | Pruned | 91.7% | 0.072 | 10.3% fewer learnables, in `conv_1`, `BN_1`, `conv_2`, `BN_2` and `conv_5` |
+  | Projected | 91.3% | 0.075 | 45.1% fewer learnables, 97.4% of the variance kept |
+  | Quantized | 91.5% | 0.072 | |
 
-  Memory falls from about 1.7 MB to roughly a tenth of that. Results vary slightly from run to run, so quote rounded values.
-- **Time:** pruning and retraining are the slow steps. On the earlier, larger data, with a GPU, pruning took about 13 minutes and retraining about 2 minutes. MATLAB Online has no GPU, so they're slower there. Suggest the saved `.mat` files: each step has a commented `load` line in the Live Script.
+  Memory falls from about 1.7 MB to about 0.2 MB. Results vary slightly from run to run, so quote rounded values.
+- **Time:** pruning and retraining are the slow steps. In the latest test run, pruning took about 5 minutes and retraining about 2 minutes. Suggest the saved `.mat` files: each step has a commented `load` line in the Live Script.
 - **Flash vs RAM hint:** pruning and projection remove parameters, which saves both storage and compute. Quantization makes each weight and activation smaller (8-bit instead of 32-bit).
 
 ## 5. Experiments to suggest
