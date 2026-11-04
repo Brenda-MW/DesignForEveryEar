@@ -21,8 +21,8 @@ The workshop license expires after the event. To keep working on the exercises, 
 | Exercise | Products |
 |---|---|
 | 1. Experience hearing loss | MATLAB, Audio Toolbox, Signal Processing Toolbox |
-| 2. Cochlear implant processor | Simulink, DSP System Toolbox, Requirements Toolbox, Simulink Test, MATLAB Coder, Simulink Coder, Embedded Coder |
-| 3. Shrink AI to fit the device | Deep Learning Toolbox, Deep Learning Toolbox Model Quantization Library, Audio Toolbox |
+| 2. Cochlear implant processor | Simulink, DSP System Toolbox, Requirements Toolbox, Simulink Test, MATLAB Coder, Simulink Coder, Fixed-Point Designer, Embedded Coder |
+| 3. Shrink AI to fit the device | Deep Learning Toolbox, Deep Learning Toolbox Model Quantization Library, Fixed-Point Designer, Audio Toolbox |
 
 
 ## AI Tutor

@@ -107,10 +107,10 @@ normalRun = Simulink.sdi.getCurrentSimulationRun(mdl);
 normalRun.Name = "Normal";
 %[text] ### Run the generated code with SIL
 %[text] Switch the simulation mode to SIL and simulate again. Simulink generates code, compiles it into a host executable, and exchanges data with it at every time step. The first SIL run takes a few minutes because of the build. Later runs reuse the executable until you change the model.
-set_param(mdl, "SimulationMode", "Software-in-the-loop (SIL)")
-sim(mdl);
-silRun = Simulink.sdi.getCurrentSimulationRun(mdl);
-silRun.Name = "SIL";
+% set_param(mdl, "SimulationMode", "Software-in-the-loop (SIL)")
+% sim(mdl);
+% silRun = Simulink.sdi.getCurrentSimulationRun(mdl);
+% silRun.Name = "SIL";
 %[text] You can do the same thing in the Simulink toolstrip. On the **Apps** tab, open **SIL/PIL Manager**, set the simulation mode to **Software-in-the-loop (SIL)**, and click **Run**. While the model runs, the Diagnostic Viewer shows the build steps and `### Starting SIL simulation for component: CochlearImplant_SIL`.
 %[text] ![](text:image:466a)
 %%
@@ -121,12 +121,12 @@ silRun.Name = "SIL";
 Simulink.sdi.view
 %[text] ![](text:image:9b06)
 %[text] Compare the two runs. The model computes in double precision, so allow a tiny absolute tolerance for floating-point rounding differences between the simulation engine and the compiled code.
-cmp = Simulink.sdi.compareRuns(normalRun.ID, silRun.ID, AbsTol=1e-12);
-results = arrayfun(@(k) cmp.getResultByIndex(k), 1:cmp.Count);
-results = results(string([results.Status]) ~= "Unaligned");
-blockPaths = arrayfun(@(r) string(Simulink.sdi.getSignal(r.SignalID1).BlockPath), results);
-comparison = table(string({results.Name})', blockPaths', string([results.Status])', ...
-    [results.MaxDifference]', VariableNames=["Signal", "Block", "Status", "MaxDifference"])
+% cmp = Simulink.sdi.compareRuns(normalRun.ID, silRun.ID, AbsTol=1e-12);
+% results = arrayfun(@(k) cmp.getResultByIndex(k), 1:cmp.Count);
+% results = results(string([results.Status]) ~= "Unaligned");
+% blockPaths = arrayfun(@(r) string(Simulink.sdi.getSignal(r.SignalID1).BlockPath), results);
+% comparison = table(string({results.Name})', blockPaths', string([results.Status])', ...
+%     [results.MaxDifference]', VariableNames=["Signal", "Block", "Status", "MaxDifference"])
 %[text] Every signal that appears in both runs is `WithinTolerance`. The table leaves out signals that only one run contains. The Normal run also logs signals inside subsystems, such as `PulseBus`, but SIL can log only signals that exist at the top level of the generated code, so those signals have no match.
 %[text] To do the comparison interactively, open the **Compare** tab in the Simulation Data Inspector, set **Baseline** to **Normal** and **Compare to** to **SIL**, set **Global Abs Tolerance** to `1e-12`, and click **Compare**.
 %%
